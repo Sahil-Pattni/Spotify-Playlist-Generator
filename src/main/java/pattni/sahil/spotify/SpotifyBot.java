@@ -108,30 +108,14 @@ public class SpotifyBot {
          *
          * @param limit: The maximum number of tracks to return. Default: 20. Minimum: 1. Maximum: 50.
          */
-
-        // Set up the headers
-        HttpHeaders headers = generateHeaders();
-
         // Request parameters
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("limit", String.valueOf(limit));
         params.add("offset", String.valueOf(offset));
         params.add("market", "CA");
 
-        // Request entity
-        HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(params, headers);
-
         // Make request
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<SavedTracks> responseEntity = restTemplate.exchange(
-                buildRoute("/me/tracks"),
-                HttpMethod.GET,
-                requestEntity,
-                SavedTracks.class
-        );
-
-        // Return the response
-        return responseEntity.getBody();
+        return makeRequest("/me/tracks", params, HttpMethod.GET, SavedTracks.class);
     }
 
     public static TopTracks getTopTracks(int limit, int offset) {
@@ -143,29 +127,14 @@ public class SpotifyBot {
          *                Use with limit to get the next set of tracks.
          */
 
-        // Set up the headers
-        HttpHeaders headers = generateHeaders();
-
         // Request parameters
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("limit", String.valueOf(limit));
         params.add("offset", String.valueOf(offset));
         params.add("time_range", "long_term");
 
-        // Request entity
-        HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(params, headers);
-
         // Make request
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<TopTracks> responseEntity = restTemplate.exchange(
-                buildRoute("/me/top/tracks"),
-                HttpMethod.GET,
-                requestEntity,
-                TopTracks.class
-        );
-
-        // Return the response
-        return responseEntity.getBody();
+        return makeRequest("/me/top/tracks", params, HttpMethod.GET, TopTracks.class);
     }
 
     // --- HELPER METHODS --- //
@@ -191,5 +160,35 @@ public class SpotifyBot {
          * @param route: The route to append to the base Spotify API URL.
          */
         return spotifyApiUrl + route;
+    }
+
+    // Generic request method
+    private static <T> T makeRequest(String route, MultiValueMap<String, String> params,  HttpMethod method, Class<T> responseType) {
+        /*
+         * Make a request to the Spotify API.
+         *
+         * @param route: The route to append to the base Spotify API URL.
+         * @param params: The parameters to send with the request.
+         * @param method: The HTTP method to use.
+         * @param responseType: The type of the response.
+         *
+         * @return: The response body.
+         */
+        // Set up the headers
+        HttpHeaders headers = generateHeaders();
+        // Request entity
+        HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(params, headers);
+
+        // Make request
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<T> responseEntity = restTemplate.exchange(
+                buildRoute(route),
+                method,
+                requestEntity,
+                responseType
+        );
+
+        // Return the response
+        return responseEntity.getBody();
     }
 }
