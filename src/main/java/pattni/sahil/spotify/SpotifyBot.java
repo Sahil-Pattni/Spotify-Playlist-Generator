@@ -1,5 +1,6 @@
 package pattni.sahil.spotify;
 
+import org.apache.coyote.Response;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -19,20 +20,6 @@ import java.util.List;
 public class SpotifyBot {
     private static final String spotifyApiUrl = "https://api.spotify.com/v1";
 
-    private static String generateAuthorizationHeader() {
-        /*
-         * Generate the authorization header for the request.
-         */
-        return "Bearer " + TokenVault.getAccessToken();
-    }
-
-    private static String buildRoute(String route) {
-        /*
-         * Build the route for the request.
-         * @param route: The route to append to the base Spotify API URL.
-         */
-        return spotifyApiUrl + route;
-    }
 
     static List<Track> createPlaylist(int length_ms, int tolerance_ms, int numTracksConsidered) {
         /*
@@ -113,6 +100,8 @@ public class SpotifyBot {
         return savedTracks;
     }
 
+    // --- API Requests --- //
+
     private static SavedTracks getSavedTracks(int limit, int offset) {
         /*
          * Get a user's saved tracks.
@@ -121,8 +110,7 @@ public class SpotifyBot {
          */
 
         // Set up the headers
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", generateAuthorizationHeader());
+        HttpHeaders headers = generateHeaders();
 
         // Request parameters
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
@@ -156,8 +144,7 @@ public class SpotifyBot {
          */
 
         // Set up the headers
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", generateAuthorizationHeader());
+        HttpHeaders headers = generateHeaders();
 
         // Request parameters
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
@@ -179,5 +166,30 @@ public class SpotifyBot {
 
         // Return the response
         return responseEntity.getBody();
+    }
+
+    // --- HELPER METHODS --- //
+    private static HttpHeaders generateHeaders() {
+        /*
+         * Generate the headers for the request.
+         */
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", generateAuthorizationHeader());
+        return headers;
+    }
+
+    private static String generateAuthorizationHeader() {
+        /*
+         * Generate the authorization header for the request.
+         */
+        return "Bearer " + TokenVault.getAccessToken();
+    }
+
+    private static String buildRoute(String route) {
+        /*
+         * Build the route for the request.
+         * @param route: The route to append to the base Spotify API URL.
+         */
+        return spotifyApiUrl + route;
     }
 }
