@@ -6,9 +6,11 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class TokenVault {
+    /*
+     * This class is used to store the access and refresh tokens for the Spotify API.
+     */
     private static String accessToken;
     private static String refreshToken;
-
     private static final String filepath = "src/main/resources/vault/tokens.vault";
 
     public static void setAccessToken(String accessToken) {

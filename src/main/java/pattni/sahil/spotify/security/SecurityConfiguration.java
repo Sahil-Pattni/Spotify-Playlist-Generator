@@ -11,8 +11,13 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 
 @Configuration
 @EnableWebSecurity
-
 public class SecurityConfiguration {
+    /*
+     * This is the configuration for the security of the application.
+     * Currently, it is set to allow all requests to the application.
+     * This will be changed in the future to only allow requests once
+     * the user has been authenticated.
+     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http

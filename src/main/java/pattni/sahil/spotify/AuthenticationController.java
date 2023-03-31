@@ -11,12 +11,13 @@ import org.springframework.web.client.RestTemplate;
 import pattni.sahil.spotify.rest_objects.AuthorizationResponse;
 import pattni.sahil.spotify.security.TokenVault;
 
-
 import java.util.Base64;
 
 @Controller
 public class AuthenticationController {
-
+    /*
+     * This class handles the authentication process for the Spotify API.
+     */
     @Value("${spring.security.oauth2.client.registration.spotify.client-id}")
     private String CLIENT_ID;
     @Value("${spring.security.oauth2.client.registration.spotify.client-secret}")
@@ -24,20 +25,17 @@ public class AuthenticationController {
     @Value("${spring.security.oauth2.client.provider.spotify.token-uri}")
     private String TOKEN_URI;
 
-    @GetMapping("/test")
-    public String test() {
-        System.out.printf("CLIENT_ID: %s%n", CLIENT_ID);
-        System.out.printf("CLIENT_SECRET: %s%n", CLIENT_SECRET);
-        System.out.printf("TOKEN_URI: %s%n", TOKEN_URI);
-
-        return "redirect:/authorized.html";
-    }
 
     @GetMapping("/callback")
-    public String exchangeCodeForToken(
-            @RequestParam(name = "code") String code
-    ) {
-        System.out.printf("---------%nCode: %s%n-----------", code);
+    public String exchangeCodeForToken(@RequestParam(name = "code") String code) {
+        /*
+         * Exchange the authorization code for an access token,
+         * as well as a refresh token. Follows the Authorization Code Flow
+         * described in the Spotify API docs.
+         *
+         * @param code The authorization code returned by the Spotify API
+         */
+
         // Set up headers
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -71,6 +69,9 @@ public class AuthenticationController {
     }
 
     private String authorizationHeader() {
+        /*
+         * Create the Authorization header for the request.
+         */
         Base64.Encoder encoder = Base64.getEncoder();
         String toEncode = String.format("%s:%s", CLIENT_ID, CLIENT_SECRET);
         return String.format("Basic %s", encoder.encodeToString(toEncode.getBytes()));

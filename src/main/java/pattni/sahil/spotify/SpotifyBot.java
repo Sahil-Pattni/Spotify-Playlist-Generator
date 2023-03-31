@@ -1,6 +1,5 @@
 package pattni.sahil.spotify;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -14,16 +13,24 @@ import pattni.sahil.spotify.rest_objects.TopTracks;
 import pattni.sahil.spotify.rest_objects.Track;
 import pattni.sahil.spotify.security.TokenVault;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SpotifyBot {
     private static final String spotifyApiUrl = "https://api.spotify.com/v1";
 
-    private static String getAuthorizationHeader() {
+    private static String generateAuthorizationHeader() {
+        /*
+         * Generate the authorization header for the request.
+         */
         return "Bearer " + TokenVault.getAccessToken();
     }
 
     private static String buildRoute(String route) {
+        /*
+         * Build the route for the request.
+         * @param route: The route to append to the base Spotify API URL.
+         */
         return spotifyApiUrl + route;
     }
 
@@ -112,10 +119,10 @@ public class SpotifyBot {
          *
          * @param limit: The maximum number of tracks to return. Default: 20. Minimum: 1. Maximum: 50.
          */
-        // TODO: Implement
+
         // Set up the headers
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", getAuthorizationHeader());
+        headers.set("Authorization", generateAuthorizationHeader());
 
         // Request parameters
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
@@ -150,7 +157,7 @@ public class SpotifyBot {
 
         // Set up the headers
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", getAuthorizationHeader());
+        headers.set("Authorization", generateAuthorizationHeader());
 
         // Request parameters
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
@@ -173,6 +180,4 @@ public class SpotifyBot {
         // Return the response
         return responseEntity.getBody();
     }
-
-
 }
