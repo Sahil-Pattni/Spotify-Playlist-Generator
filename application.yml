@@ -1,0 +1,30 @@
+logging:
+  level:
+    org.springframework.security: DEBUG
+
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          spotify:
+            client-id: ${SPOTIFY_KEY}
+            client-secret: ${SPOTIFY_SECRET}
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/callback"
+            scope:
+              - user-library-modify
+              - user-library-read
+              - user-read-email
+              - user-top-read
+              - playlist-modify-private
+              - playlist-modify-public
+              - playlist-read-private
+              - playlist-read-collaborative
+        provider:
+          spotify:
+            authorization-uri: https://accounts.spotify.com/authorize
+            token-uri: https://accounts.spotify.com/api/token
+            user-info-uri: https://api.spotify.com/v1/me
+            user-name-attribute: id
+            jwk-set-uri: https://accounts.spotify.com/.well-known/jwks.json
